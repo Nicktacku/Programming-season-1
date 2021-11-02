@@ -24,13 +24,13 @@ int main() {
 
 int candyCost(char type, int kg){
     // makes the calculation for the chosen type and entered kilogram
-    if(type == 'a'){
+    if(type == 'a' || type == 'A'){
         return 35 * kg;
-    } else if(type == 'b'){
+    } else if(type == 'b' || type == 'B'){
         return 45 * kg;
-    } else if(type == 'c'){
+    } else if(type == 'c' || type == 'C'){
         return 56 * kg;
-    } else if(type == 'd'){
+    } else if(type == 'd' || type == 'D'){
         return 57.50 * kg;
     }
 }
