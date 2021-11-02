@@ -5,8 +5,6 @@ int operationExplosion(int a, int b, int c);
 int main() {
     int a, b, c;
 
-    printf("sdpqs2 displayer\n");
-
     printf("Enter first number: ");
     scanf("%d", &a);
     printf("Enter second number: ");
