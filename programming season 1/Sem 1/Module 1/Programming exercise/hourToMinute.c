@@ -10,6 +10,7 @@ int main() {
     printf("Enter Hour: ");
     scanf("%d", &hour);
 
+    // hour if 1, if more then hours
     if (hour > 1){
         printf("%d hours is equal to %d minutes", hour, htmConverter(hour));
     } else {
@@ -19,5 +20,5 @@ int main() {
 }
 
 int htmConverter(int hour) {
-    return hour * 60;
+    return hour * 60; //converts hours to minutes
 }
