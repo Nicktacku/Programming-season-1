@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
+//Nicholas Noly dela Torre
+
 int main(){
     char polygon;
     float area, perimeter, side, side1,

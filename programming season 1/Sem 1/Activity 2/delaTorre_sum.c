@@ -1,10 +1,12 @@
 #include <stdio.h>
 
-int main(){
-    int i, sum, x = 10;
+//Nicholas Noly dela Torre
 
-    //changable by changing x
-    for(i = 1; i <= x; i++){
+int main(){
+    int i, sum, limit = 10;
+
+    //changable by changing limit
+    for(i = 1; i <= limit; i++){
         sum += i;
     }
     printf("sum: %d", sum);
