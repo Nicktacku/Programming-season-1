@@ -178,6 +178,7 @@ void display()
     char date[11], product[40];
     char init[255];
     char *split;
+    char chc;
 
     system("cls");
 
@@ -185,9 +186,13 @@ void display()
     {
         fgets(init, 255, ic_record);
 
-        if (strcmp(init, "EOR") == 1)
+        if (strcmp(init, "EOR") == 1 && ctr == 2)
         {
             ctr = 0;
+            printf("\nPage: %d", page);
+            getch();
+            system("cls");
+            page++;
         }
 
         if (ctr == 0)
@@ -200,6 +205,7 @@ void display()
         else if (ctr == 1)
         {
             printf("\nDate: %s\n", init);
+            ctrpg = 0;
             ctr = 2;
         }
         else if (ctr == 2)
@@ -316,7 +322,7 @@ void display()
                         char ip[40] = "Ice Pop";
                         strcpy(product, ip);
                     }
-                    printf("\n%s ", product);
+                    printf("\nFlavor: %s ", product);
                     pr = 0;
                 }
                 else
@@ -329,8 +335,16 @@ void display()
                 split = strtok(NULL, " ");
             }
             ctrpg++;
+            if (ctrpg == 3)
+            {
+                pr = 0;
+                ctrpg = 0;
+                printf("\nPage: %d", page);
+                getch();
+                system("cls");
+                page++;
+            }
         }
-        page++;
     }
     fclose(ic_record);
 }
