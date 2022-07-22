@@ -5,6 +5,7 @@ void order();
 void display();
 void search();
 void back_up();
+int total();
 
 int main()
 {
@@ -34,6 +35,14 @@ int main()
     else if (choice == 3)
     {
         display();
+    }
+    else if (choice == 4)
+    {
+        search();
+    }
+    else if (choice == 5)
+    {
+        back_up();
     }
     return 0;
 }
@@ -173,14 +182,16 @@ void order()
 void display()
 {
     FILE *ic_record = fopen("Records.txt", "r");
-    int choice, amount, ctrpg = 0, ctr = 0, counter, pr, page = 1;
-    double price, rprice, total, profit;
+    int choice, amount, ctrpg = 0, ctr = 0, counter, pr, page = 1, items, count;
+    double price, rprice, profit;
     char date[11], product[40];
     char init[255];
     char *split;
     char chc;
 
     system("cls");
+
+    count = total();
 
     while (!feof(ic_record))
     {
@@ -189,7 +200,7 @@ void display()
         if (strcmp(init, "EOR") == 1 && ctr == 2)
         {
             ctr = 0;
-            printf("\nPage: %d", page);
+            printf("\nPage: %d of %d", page, count);
             getch();
             system("cls");
             page++;
@@ -212,6 +223,16 @@ void display()
         {
             pr = 1;
             split = strtok(init, " ");
+
+            if (ctrpg == 3)
+            {
+                pr = 0;
+                ctrpg = 0;
+                printf("\nPage: %d of %d", page, count);
+                getch();
+                system("cls");
+                page++;
+            }
 
             while (split != NULL)
             {
@@ -335,16 +356,230 @@ void display()
                 split = strtok(NULL, " ");
             }
             ctrpg++;
+        }
+    }
+    fclose(ic_record);
+}
+
+int total()
+{
+    FILE *ic_record = fopen("Records.txt", "r");
+    int choice, amount, ctrpg = 0, ctr = 0, counter, pr, page = 1, items, count, total;
+    double price, rprice, profit;
+    char date[11], product[40];
+    char init[255];
+    char *split;
+    char chc;
+
+    while (!feof(ic_record))
+    {
+        fgets(init, 255, ic_record);
+
+        if (strcmp(init, "EOR") == 1 && ctr == 2)
+        {
+            ctr = 0;
+            total++;
+        }
+
+        if (ctr == 0)
+        {
+            if (strcmp(init, "SOR") == 1)
+            {
+                ctr = 1;
+            }
+        }
+        else if (ctr == 1)
+        {
+            ctrpg = 0;
+            ctr = 2;
+        }
+        else if (ctr == 2)
+        {
+            pr = 1;
+            split = strtok(init, " ");
+
             if (ctrpg == 3)
             {
                 pr = 0;
                 ctrpg = 0;
-                printf("\nPage: %d", page);
-                getch();
-                system("cls");
-                page++;
+                total++;
             }
+
+            while (split != NULL)
+            {
+                if (pr == 1)
+                {
+                    if (strcmp(split, "1") == 0)
+                    {
+                        char ms[40] = "Milk Stick";
+                        strcpy(product, ms);
+                    }
+                    else if (strcmp(split, "2") == 0)
+                    {
+                        char wm[40] = "Watermelon";
+                        strcpy(product, wm);
+                    }
+                    else if (strcmp(split, "3") == 0)
+                    {
+                        char cst[40] = "Chocolate Stick";
+                        strcpy(product, cst);
+                    }
+                    else if (strcmp(split, "12") == 0)
+                    {
+                        char p[40] = "Pineapple";
+                        strcpy(product, p);
+                    }
+                    else if (strcmp(split, "4") == 0)
+                    {
+                        char mm[40] = "Milk Melon";
+                        strcpy(product, mm);
+                    }
+                    else if (strcmp(split, "5") == 0)
+                    {
+                        char cc[40] = "Coffee Crispy";
+                        strcpy(product, cc);
+                    }
+                    else if (strcmp(split, "6") == 0)
+                    {
+                        char s[40] = "Sweetcorn";
+                        strcpy(product, s);
+                    }
+                    else if (strcmp(split, "7") == 0)
+                    {
+                        char cs[40] = "Chocolate Sundae";
+                        strcpy(product, cs);
+                    }
+                    else if (strcmp(split, "18") == 0)
+                    {
+                        char ccp[40] = "Choco Cup";
+                        strcpy(product, ccp);
+                    }
+                    else if (strcmp(split, "20") == 0)
+                    {
+                        char ss[40] = "Strawberry Sundae";
+                        strcpy(product, ss);
+                    }
+                    else if (strcmp(split, "8") == 0)
+                    {
+                        char csp[40] = "Chocolate Crispy";
+                        strcpy(product, csp);
+                    }
+                    else if (strcmp(split, "13") == 0)
+                    {
+                        char scp[40] = "Strawberry Crispy";
+                        strcpy(product, scp);
+                    }
+                    else if (strcmp(split, "21") == 0)
+                    {
+                        char cck[40] = "Choco Cookies";
+                        strcpy(product, cck);
+                    }
+                    else if (strcmp(split, "9") == 0)
+                    {
+                        char scn[40] = "Strawberry Cone";
+                        strcpy(product, scn);
+                    }
+                    else if (strcmp(split, "10") == 0)
+                    {
+                        char cm[40] = "Choco Melt";
+                        strcpy(product, cm);
+                    }
+                    else if (strcmp(split, "11") == 0)
+                    {
+                        char as[40] = "Alpukat Strawberry";
+                        strcpy(product, as);
+                    }
+                    else if (strcmp(split, "17") == 0)
+                    {
+                        char cv[40] = "Choco Vanilla 2in1";
+                        strcpy(product, cv);
+                    }
+                    else if (strcmp(split, "14") == 0)
+                    {
+                        char ms[40] = "Mango Slush";
+                        strcpy(product, ms);
+                    }
+                    else if (strcmp(split, "15") == 0)
+                    {
+                        char vm[40] = "Vanilla Mochi";
+                        strcpy(product, vm);
+                    }
+                    else if (strcmp(split, "16") == 0)
+                    {
+                        char mc[40] = "Mochi Chocolate";
+                        strcpy(product, mc);
+                    }
+                    else if (strcmp(split, "19") == 0)
+                    {
+                        char ip[40] = "Ice Pop";
+                        strcpy(product, ip);
+                    }
+                    pr = 0;
+                }
+                else
+                {
+                    if (strcmp(init, "EOR") == -1)
+                    {
+                    }
+                }
+                split = strtok(NULL, " ");
+            }
+            ctrpg++;
         }
     }
-    fclose(ic_record);
+
+    return total;
+}
+
+void search()
+{
+    FILE *ic_record = fopen("Records.txt", "r");
+    char date[20];
+    char *split;
+    char line[255];
+    int it = 0, ctr = 0;
+
+    printf("Enter date to be searched (Format: mm/dd/yyyy):");
+    scanf("%s", date);
+
+    while (fscanf(ic_record, "%s", line) != EOF)
+    {
+        split = strtok(line, " ");
+
+        if (ctr == 1 && strcmp(split, "EOR") != 0)
+        {
+            it = 1;
+            printf("%s ", line);
+        }
+
+        if (strcmp(date, split) == 0)
+        {
+            ctr = 1;
+        }
+        else if (strcmp(split, "EOR") == 0)
+        {
+            ctr = 0;
+        }
+    }
+    if (it == 1)
+    {
+        printf("\ndate: %s", date);
+    }
+    else
+    {
+        printf("\nThere is no match");
+    }
+}
+
+void back_up()
+{
+    FILE *orig = fopen("Records.txt", "r");
+    FILE *back_up = fopen("Records Back Up.txt", "w");
+    char line[255];
+
+    while (!feof(orig))
+    {
+        fgets(line, 255, orig);
+        fprintf(back_up, "%s", line);
+    }
 }
