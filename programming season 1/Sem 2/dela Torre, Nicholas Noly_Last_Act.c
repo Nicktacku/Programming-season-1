@@ -123,6 +123,11 @@ int main()
                 end = 'y';
             }
         }
+        else
+        {
+            gotoxy(4, 22);
+            printf("(press \"w\" and \"s\" to navigate the menu and \"e\" to choose it)");
+        }
     }
     gotoxy(0, 26);
     return 0;
@@ -199,8 +204,9 @@ void order()
     printxy(10, 15, "Enter the date of the order (mm/dd/yyyy):");
     gotoxy(53, 15);
     scanf("%s", date);
+    frame();
 
-    fprintf(ic_record, "\nSOR");
+    fprintf(ic_record, "SOR");
     fprintf(ic_record, "\n%s", date);
 
     while (quit != 2)
@@ -239,6 +245,8 @@ void order()
         printxy(4, 22, "19) Ice Pop");
         printxy(30, 22, "20) Strawberry Sundae");
         printxy(57, 22, "21) Choco Cookies");
+
+        printxy(4, 23, "(use \"a\", \"s\", \"w\", \"d\" to navigate and \"e\" to enter)");
 
         while (pressed != 'e')
         {
@@ -524,7 +532,7 @@ void order()
                 putchar(174);
             }
 
-            gotoxy(4, 23);
+            gotoxy(57, 23);
 
             pressed = tolower(getch());
         }
@@ -583,6 +591,7 @@ void order()
         printf("Enter the price you will sell the product (should be more than %.2lf):", rprice);
         gotoxy(76, 15);
         scanf("%lf", &price);
+        frame();
 
         total = rprice * amount;
         profit = (price * amount) - total;
@@ -592,8 +601,6 @@ void order()
         center(14, "Are you going to order another product?");
         printxy(30, 16, "Yes");
         printxy(50, 16, "No");
-        // gotoxy(34, 16);
-        // putchar(174);
 
         char qpressed = ' ';
         quit = 1;
@@ -673,6 +680,8 @@ void display()
             ctr = 0;
             gotoxy(32, 18);
             printf("Page: %d of %d", page, count);
+            gotoxy(4, 20);
+            printf("Press any key to continue..");
             getch();
             clearportion(4, 12, 79, 17);
             page++;
@@ -706,6 +715,8 @@ void display()
                 ctrpg = 0;
                 gotoxy(32, 18);
                 printf("Page: %d of %d", page, count);
+                gotoxy(4, 20);
+                printf("Press any key to continue..");
                 getch();
                 clearportion(4, 12, 79, 17);
                 page++;
@@ -1043,12 +1054,24 @@ void search()
     char *split;
     char line[255];
     char product[30];
-    int it = 0, ctr = 0, pr = 1, counter = 0, page = 1, pgctr = 0, dt = 0, total;
+    int it = 0, ctr = 0, pr = 1, counter = 0, page = 1, pgctr = 0, dt = 0, total, row = 4, column = 12, position = 0;
 
-    printf("Enter date to be searched (Format: mm/dd/yyyy): ");
+    gotoxy(10, 15);
+    printf("Enter date to be searched (Format: mm/dd/yyyy):");
+    gotoxy(58, 15);
     scanf("%s", date);
+    frame();
 
     total = total_search(date);
+
+    frame_erase();
+
+    printxy(6, 10, "Product");
+    printxy(25, 10, "Retail Price");
+    printxy(41, 10, "Selling Price");
+    printxy(57, 10, "Pieces");
+    printxy(65, 10, "Total");
+    printxy(72, 10, "Profit");
 
     while (fscanf(ic_record, "%s", line) != EOF)
     {
@@ -1166,27 +1189,59 @@ void search()
                         char ip[40] = "Ice Pop";
                         strcpy(product, ip);
                     }
-                    printf("\n%s ", product);
+                    gotoxy(row, column);
+                    printf("%s", product);
+                    position++;
                     counter++;
                 }
                 else if (counter > 0)
                 {
-
-                    printf("%s ", split);
+                    if (position == 1)
+                    {
+                        row += 25;
+                    }
+                    else if (position == 2)
+                    {
+                        row += 14;
+                    }
+                    else if (position == 3)
+                    {
+                        row += 15;
+                    }
+                    else if (position == 4)
+                    {
+                        row += 6;
+                    }
+                    else if (position == 5)
+                    {
+                        row += 9;
+                    }
+                    gotoxy(row, column);
+                    printf("%s", split);
+                    position++;
                     counter++;
 
                     if (counter == 6)
                     {
                         counter = 0;
                         pgctr++;
+                        row = 4;
+                        column += 2;
+                        position = 0;
 
                         if (pgctr == 3)
                         {
+                            gotoxy(4, 20);
+                            printf("Press any key to continue..");
                             getch();
-                            system("cls");
+                            clearportion(4, 12, 79, 17);
                             page++;
-                            printf("\npage: %d", page);
-                            printf(" of %d", total);
+                            row = 4;
+                            column = 12;
+                            position = 0;
+                            pgctr = 0;
+                            gotoxy(32, 18);
+                            printf("page: %d  of %d", page, total);
                         }
                     }
                 }
@@ -1201,9 +1256,10 @@ void search()
         {
             if (strcmp(date, line) == 0)
             {
-                printf("\ndate: %s", date);
-                printf("\npage: %d", page);
-                printf(" of %d", total);
+                gotoxy(4, 8);
+                printf("date: %s", date);
+                gotoxy(32, 18);
+                printf("page: %d of %d", page, total);
                 ctr = 1;
                 dt = 0;
             }
@@ -1221,28 +1277,84 @@ void search()
         if (strcmp(split, "EOR") == 0)
         {
             ctr = 0;
+            gotoxy(4, 20);
+            printf("Press any key to continue..");
+            getch();
         }
     }
 
-    if (it == 1)
-    {
-    }
-    else
+    if (it != 1)
     {
         printf("\nThere is no match");
     }
+    frame_erase();
 }
 
 void back_up()
 {
-    FILE *orig = fopen("Records.txt", "r");
-    FILE *back_up = fopen("Records Back Up.txt", "w");
-    char line[255];
+    char pressed;
+    int choice = 1;
 
-    while (!feof(orig))
+    while (pressed != 'e')
     {
-        fgets(line, 255, orig);
-        fprintf(back_up, "%s", line);
+        if (choice == 1)
+        {
+            gotoxy(40, 16);
+            putchar(174);
+            clearportion(44, 16, 44, 16);
+        }
+        else if (choice == 2)
+        {
+            gotoxy(44, 16);
+            putchar(174);
+            clearportion(40, 16, 40, 16);
+        }
+        center(11, "Warning!");
+        center(12, "It will overwrite the existing back up if there is one.");
+        center(13, "(use \"a\" and \"d\" to choose answer and \"e\" to enter");
+        center(15, "Continue?");
+        printxy(37, 16, "Yes");
+        printxy(42, 16, "No");
+        pressed = tolower(getch());
+
+        if (pressed == 'a')
+        {
+            choice--;
+            if (choice < 1)
+            {
+                choice = 2;
+            }
+        }
+        else if (pressed == 'd')
+        {
+            choice++;
+            if (choice > 2)
+            {
+                choice = 1;
+            }
+        }
+    }
+
+    if (choice == 1)
+    {
+        FILE *orig = fopen("Records.txt", "r");
+        FILE *back_up = fopen("Records Back Up.txt", "w");
+        char line[255];
+
+        while (!feof(orig))
+        {
+            fgets(line, 255, orig);
+            fprintf(back_up, "%s", line);
+        }
+        fclose(orig);
+        fclose(back_up);
+        frame_erase();
+        gotoxy(4, 22);
+        printf("Back up has been created");
+    }
+    else if (choice == 2)
+    {
+        frame_erase();
     }
 }
 
@@ -1383,6 +1495,7 @@ int total_search(char *date)
 
                         if (pgctr == 3)
                         {
+                            pgctr = 0;
                             total++;
                         }
                     }
