@@ -17,10 +17,17 @@ int main()
     char press;
     char end = 'n';
 
+    // builds the frame
     frame();
 
+    // builds the menu
+    // after the function is executed
+    // will go back here
     while (end != 'y')
     {
+        // creates the animation
+        // as they press the keys
+        // gotoxy will put the arrow in the position it is set
         if (choice == 0)
         {
             clearportion(9, 19, 12, 19);
@@ -64,6 +71,7 @@ int main()
             putchar(174);
         }
 
+        // menu content
         printxy(4, 8, "This is a recorder for the orders of your aice branch");
         printxy(4, 9, "it creates a file under the name \"Records\"");
         printxy(4, 11, "(use \"w\" and \"s\" to navigate the menu and \"e\" to choose it)");
@@ -76,11 +84,14 @@ int main()
         printxy(4, 18, "Back Up");
         printxy(4, 19, "Exit");
         gotoxy(4, 22);
-        press = tolower(getch());
 
+        // gets input to determine arrow position
+        // and function to be executed
+        press = tolower(getch());
         if (press == 'w')
         {
             choice--;
+
             if (choice == -1)
             {
                 choice = 5;
@@ -89,6 +100,7 @@ int main()
         else if (press == 's')
         {
             choice++;
+
             if (choice == 6)
             {
                 choice = 0;
@@ -97,6 +109,7 @@ int main()
         else if (press == 'e')
         {
             frame_erase();
+
             if (choice == 0)
             {
                 create();
@@ -129,6 +142,7 @@ int main()
             printf("(press \"w\" and \"s\" to navigate the menu and \"e\" to choose it)");
         }
     }
+
     gotoxy(0, 26);
     return 0;
 }
@@ -138,6 +152,7 @@ void create()
     char pressed;
     int choice = 1;
 
+    // make sure that the user want to create the file
     while (pressed != 'e')
     {
         if (choice == 1)
@@ -152,6 +167,7 @@ void create()
             putchar(174);
             clearportion(40, 16, 40, 16);
         }
+
         center(11, "Warning!");
         center(12, "It will overwrite the existing record if there is one.");
         center(13, "(use \"a\" and \"d\" to choose answer and \"e\" to enter");
@@ -163,6 +179,7 @@ void create()
         if (pressed == 'a')
         {
             choice--;
+
             if (choice < 1)
             {
                 choice = 2;
@@ -171,6 +188,7 @@ void create()
         else if (pressed == 'd')
         {
             choice++;
+
             if (choice > 2)
             {
                 choice = 1;
@@ -178,12 +196,15 @@ void create()
         }
     }
 
+    // creates the file if they picked yes
     if (choice == 1)
     {
         FILE *ic_record = fopen("Records.txt", "w");
         frame_erase();
+
         gotoxy(4, 22);
         printf("File has been created");
+
         fclose(ic_record);
     }
 
@@ -198,24 +219,31 @@ void order()
     FILE *ic_record = fopen("Records.txt", "a");
     int amount;
     double price, rprice, total, profit;
-    char date[11], product[40];
+    char date[11];
     int quit;
 
+    // input for date
     printxy(10, 15, "Enter the date of the order (mm/dd/yyyy):");
     gotoxy(53, 15);
     scanf("%s", date);
+
+    // make sure the frame is fixed
     frame();
 
+    // initializes the record
     fprintf(ic_record, "SOR");
     fprintf(ic_record, "\n%s", date);
 
+    // takes the order for that date
     while (quit != 2)
     {
+        // initialize and resets the animation
         int choice = 1, column = 1;
         char pressed = ' ';
 
         frame_erase();
 
+        // order menu
         printxy(4, 8, "Choose the flavor that will be ordered:");
 
         printxy(4, 10, "1) Milk Stick");
@@ -248,6 +276,8 @@ void order()
 
         printxy(4, 23, "(use \"a\", \"s\", \"w\", \"d\" to navigate and \"e\" to enter)");
 
+        // takes the input and makes the animation
+        // also take the chosen product
         while (pressed != 'e')
         {
             if (pressed == 's')
@@ -533,10 +563,10 @@ void order()
             }
 
             gotoxy(57, 23);
-
             pressed = tolower(getch());
         }
 
+        // sets the retail price based on choice
         if (choice == 1 || choice == 2 || choice == 3 || choice == 12)
         {
             rprice = 7.50;
@@ -584,26 +614,37 @@ void order()
 
         frame_erase();
 
+        // input for the amount of ice cream to be ordered
         printxy(4, 14, "Enter the number of ice cream that will be ordered:");
         gotoxy(57, 14);
         scanf("%d", &amount);
+
+        // input for the price of ice cream that it will be sold for
         gotoxy(4, 15);
         printf("Enter the price you will sell the product (should be more than %.2lf):", rprice);
         gotoxy(76, 15);
         scanf("%lf", &price);
+
+        // resets the frame just in case
         frame();
 
+        // calculate the total and profit value
         total = rprice * amount;
         profit = (price * amount) - total;
+
+        // record it all in the txt file
         fprintf(ic_record, "\n%d %.2lf %.2lf %d %.2lf %.2lf", choice, rprice, price, amount, total, profit);
 
         frame_erase();
+
+        // makes the user order again or end the record
         center(14, "Are you going to order another product?");
         printxy(30, 16, "Yes");
         printxy(50, 16, "No");
 
         char qpressed = ' ';
         quit = 1;
+
         while (qpressed != 'e')
         {
             if (quit == 1)
@@ -641,10 +682,13 @@ void order()
             }
         }
     }
+    // ends the record in txt file
     fprintf(ic_record, "\nEOR\n");
+
     fclose(ic_record);
 
     frame_erase();
+
     gotoxy(4, 22);
     printf("Order has been recorded");
 }
@@ -652,15 +696,14 @@ void order()
 void display()
 {
     FILE *ic_record = fopen("Records.txt", "r");
-    int choice, amount, ctrpg = 0, ctr = 0, counter, pr, page = 1, items, count, row = 4, column = 12, position = 0;
-    double price, rprice, profit;
-    char date[11], product[40];
-    char init[255];
+    int ctrpg = 0, ctr = 0, page = 1, count, row = 4, column = 12, position = 0, pr;
+    char product[40], init[255];
     char *split;
-    char chc;
 
+    // returns the total page
     count = total();
 
+    // initializes header of records
     printxy(6, 10, "Product");
     printxy(25, 10, "Retail Price");
     printxy(41, 10, "Selling Price");
@@ -670,23 +713,31 @@ void display()
 
     while (!feof(ic_record))
     {
+        // gets the line and put it int he init string variable
         fgets(init, 255, ic_record);
 
+        // executes when a date has ended then create a new page
         if (strcmp(init, "EOR") == 1 && ctr == 2)
         {
+            // resets the variables
             row = 4;
             column = 12;
             position = 0;
             ctr = 0;
+
             gotoxy(32, 18);
             printf("Page: %d of %d", page, count);
+
             gotoxy(4, 20);
             printf("Press any key to continue..");
             getch();
             clearportion(4, 12, 79, 17);
+
             page++;
         }
 
+        // checks the keywords of sor, that will move to printing the date
+        // then looping through the record
         if (ctr == 0)
         {
             if (strcmp(init, "SOR") == 1)
@@ -696,34 +747,45 @@ void display()
         }
         else if (ctr == 1)
         {
-            gotoxy(4, 8);
-            printf("Date: %s", init);
             ctrpg = 0;
             ctr = 2;
+
+            gotoxy(4, 8);
+            printf("Date: %s", init);
         }
         else if (ctr == 2)
         {
+            // executes the translation of product
             pr = 1;
+            // splits the init string
             split = strtok(init, " ");
 
+            // if the printed record is 3 the next page will be created
             if (ctrpg == 3)
             {
+                // resets the variables
                 row = 4;
                 column = 12;
                 position = 0;
                 pr = 1;
                 ctrpg = 0;
+
                 gotoxy(32, 18);
                 printf("Page: %d of %d", page, count);
+
                 gotoxy(4, 20);
                 printf("Press any key to continue..");
                 getch();
                 clearportion(4, 12, 79, 17);
+
                 page++;
             }
 
+            // loop in the splitted strings
             while (split != NULL)
             {
+                // translate and prints the product name first then
+                // goes through the other products
                 if (pr == 1)
                 {
                     if (strcmp(split, "1") == 0)
@@ -831,15 +893,18 @@ void display()
                         char ip[40] = "Ice Pop";
                         strcpy(product, ip);
                     }
-                    gotoxy(row, column);
-                    printf("%s", product);
+
                     position++;
                     pr = 0;
+
+                    gotoxy(row, column);
+                    printf("%s", product);
                 }
                 else
                 {
                     if (strcmp(init, "EOR") == -1)
                     {
+                        // palces them in their respective places
                         if (position == 1)
                         {
                             row += 25;
@@ -860,19 +925,25 @@ void display()
                         {
                             row += 9;
                         }
+
+                        position++;
+
                         gotoxy(row, column);
                         printf("%s", split);
-                        position++;
                     }
                 }
+
                 split = strtok(NULL, " ");
             }
+
+            // set values to the variables to progress
             ctrpg++;
             row = 4;
             column += 2;
             position = 0;
         }
     }
+
     fclose(ic_record);
     frame_erase();
 }
@@ -880,13 +951,11 @@ void display()
 int total()
 {
     FILE *ic_record = fopen("Records.txt", "r");
-    int choice, amount, ctrpg = 0, ctr = 0, counter, pr, page = 1, items, count, total = 0;
-    double price, rprice, profit;
-    char date[11], product[40];
-    char init[255];
+    int ctrpg = 0, ctr = 0, total = 0, count, row = 4, column = 12, position = 0;
+    char product[40], init[255];
     char *split;
-    char chc;
 
+    // returns the total pages
     while (!feof(ic_record))
     {
         fgets(init, 255, ic_record);
@@ -911,135 +980,14 @@ int total()
         }
         else if (ctr == 2)
         {
-            pr = 1;
             split = strtok(init, " ");
 
             if (ctrpg == 3)
             {
-                pr = 0;
                 ctrpg = 0;
                 total++;
             }
 
-            while (split != NULL)
-            {
-                if (pr == 1)
-                {
-                    if (strcmp(split, "1") == 0)
-                    {
-                        char ms[40] = "Milk Stick";
-                        strcpy(product, ms);
-                    }
-                    else if (strcmp(split, "2") == 0)
-                    {
-                        char wm[40] = "Watermelon";
-                        strcpy(product, wm);
-                    }
-                    else if (strcmp(split, "3") == 0)
-                    {
-                        char cst[40] = "Chocolate Stick";
-                        strcpy(product, cst);
-                    }
-                    else if (strcmp(split, "12") == 0)
-                    {
-                        char p[40] = "Pineapple";
-                        strcpy(product, p);
-                    }
-                    else if (strcmp(split, "4") == 0)
-                    {
-                        char mm[40] = "Milk Melon";
-                        strcpy(product, mm);
-                    }
-                    else if (strcmp(split, "5") == 0)
-                    {
-                        char cc[40] = "Coffee Crispy";
-                        strcpy(product, cc);
-                    }
-                    else if (strcmp(split, "6") == 0)
-                    {
-                        char s[40] = "Sweetcorn";
-                        strcpy(product, s);
-                    }
-                    else if (strcmp(split, "7") == 0)
-                    {
-                        char cs[40] = "Chocolate Sundae";
-                        strcpy(product, cs);
-                    }
-                    else if (strcmp(split, "18") == 0)
-                    {
-                        char ccp[40] = "Choco Cup";
-                        strcpy(product, ccp);
-                    }
-                    else if (strcmp(split, "20") == 0)
-                    {
-                        char ss[40] = "Strawberry Sundae";
-                        strcpy(product, ss);
-                    }
-                    else if (strcmp(split, "8") == 0)
-                    {
-                        char csp[40] = "Chocolate Crispy";
-                        strcpy(product, csp);
-                    }
-                    else if (strcmp(split, "13") == 0)
-                    {
-                        char scp[40] = "Strawberry Crispy";
-                        strcpy(product, scp);
-                    }
-                    else if (strcmp(split, "21") == 0)
-                    {
-                        char cck[40] = "Choco Cookies";
-                        strcpy(product, cck);
-                    }
-                    else if (strcmp(split, "9") == 0)
-                    {
-                        char scn[40] = "Strawberry Cone";
-                        strcpy(product, scn);
-                    }
-                    else if (strcmp(split, "10") == 0)
-                    {
-                        char cm[40] = "Choco Melt";
-                        strcpy(product, cm);
-                    }
-                    else if (strcmp(split, "11") == 0)
-                    {
-                        char as[40] = "Alpukat Strawberry";
-                        strcpy(product, as);
-                    }
-                    else if (strcmp(split, "17") == 0)
-                    {
-                        char cv[40] = "Choco Vanilla 2in1";
-                        strcpy(product, cv);
-                    }
-                    else if (strcmp(split, "14") == 0)
-                    {
-                        char ms[40] = "Mango Slush";
-                        strcpy(product, ms);
-                    }
-                    else if (strcmp(split, "15") == 0)
-                    {
-                        char vm[40] = "Vanilla Mochi";
-                        strcpy(product, vm);
-                    }
-                    else if (strcmp(split, "16") == 0)
-                    {
-                        char mc[40] = "Mochi Chocolate";
-                        strcpy(product, mc);
-                    }
-                    else if (strcmp(split, "19") == 0)
-                    {
-                        char ip[40] = "Ice Pop";
-                        strcpy(product, ip);
-                    }
-                    pr = 0;
-                }
-                else
-                {
-                    if (strcmp(init, "EOR") == -1)
-                    {
-                    }
-                }
-                split = strtok(NULL, " ");
-            }
             ctrpg++;
         }
     }
@@ -1050,18 +998,21 @@ int total()
 void search()
 {
     FILE *ic_record = fopen("Records.txt", "r");
+    int it = 0, ctr = 0, counter = 0, page = 1, pgctr = 0, dt = 0, total, row = 4, column = 12, position = 0;
     char date[20];
     char *split;
     char line[255];
     char product[30];
-    int it = 0, ctr = 0, pr = 1, counter = 0, page = 1, pgctr = 0, dt = 0, total, row = 4, column = 12, position = 0;
 
+    // input for the date to be searched
     gotoxy(10, 15);
     printf("Enter date to be searched (Format: mm/dd/yyyy):");
     gotoxy(58, 15);
     scanf("%s", date);
+
     frame();
 
+    // gives the total pages of the record in that date
     total = total_search(date);
 
     frame_erase();
@@ -1075,13 +1026,17 @@ void search()
 
     while (fscanf(ic_record, "%s", line) != EOF)
     {
+        // split the scanned line
         split = strtok(line, " ");
 
+        // while its not the end of record
         if (ctr == 1 && strcmp(line, "EOR") != 0)
         {
+            // prints the records
             while (split != NULL)
             {
                 it = 1;
+
                 if (counter == 0)
                 {
                     if (strcmp(split, "1") == 0)
@@ -1189,13 +1144,16 @@ void search()
                         char ip[40] = "Ice Pop";
                         strcpy(product, ip);
                     }
-                    gotoxy(row, column);
-                    printf("%s", product);
+
                     position++;
                     counter++;
+
+                    gotoxy(row, column);
+                    printf("%s", product);
                 }
                 else if (counter > 0)
                 {
+                    // places the contents in their respective places
                     if (position == 1)
                     {
                         row += 25;
@@ -1216,11 +1174,14 @@ void search()
                     {
                         row += 9;
                     }
-                    gotoxy(row, column);
-                    printf("%s", split);
+
                     position++;
                     counter++;
 
+                    gotoxy(row, column);
+                    printf("%s", split);
+
+                    // adds the page counter for every line of record
                     if (counter == 6)
                     {
                         counter = 0;
@@ -1229,19 +1190,23 @@ void search()
                         column += 2;
                         position = 0;
 
+                        // if the page counter reaches 3
+                        // will inrement the page value
                         if (pgctr == 3)
                         {
-                            gotoxy(4, 20);
-                            printf("Press any key to continue..");
-                            getch();
-                            clearportion(4, 12, 79, 17);
                             page++;
                             row = 4;
                             column = 12;
                             position = 0;
                             pgctr = 0;
+
+                            gotoxy(4, 20);
+                            printf("Press any key to continue..");
+                            getch();
+                            clearportion(4, 12, 79, 17);
+
                             gotoxy(32, 18);
-                            printf("page: %d  of %d", page, total);
+                            printf("page: %d of %d", page, total);
                         }
                     }
                 }
@@ -1252,16 +1217,18 @@ void search()
 
         split = strtok(line, " ");
 
+        // execute as initial
         if (dt == 1)
         {
             if (strcmp(date, line) == 0)
             {
+                ctr = 1;
+                dt = 0;
+
                 gotoxy(4, 8);
                 printf("date: %s", date);
                 gotoxy(32, 18);
                 printf("page: %d of %d", page, total);
-                ctr = 1;
-                dt = 0;
             }
             else
             {
@@ -1277,16 +1244,19 @@ void search()
         if (strcmp(split, "EOR") == 0)
         {
             ctr = 0;
+
             gotoxy(4, 20);
             printf("Press any key to continue..");
             getch();
         }
     }
 
+    // if there is no match
     if (it != 1)
     {
         printf("\nThere is no match");
     }
+
     frame_erase();
 }
 
@@ -1295,6 +1265,7 @@ void back_up()
     char pressed;
     int choice = 1;
 
+    // makes sure that the user is sure to execte this function
     while (pressed != 'e')
     {
         if (choice == 1)
@@ -1309,14 +1280,15 @@ void back_up()
             putchar(174);
             clearportion(40, 16, 40, 16);
         }
+
         center(11, "Warning!");
         center(12, "It will overwrite the existing back up if there is one.");
         center(13, "(use \"a\" and \"d\" to choose answer and \"e\" to enter");
         center(15, "Continue?");
         printxy(37, 16, "Yes");
         printxy(42, 16, "No");
-        pressed = tolower(getch());
 
+        pressed = tolower(getch());
         if (pressed == 'a')
         {
             choice--;
@@ -1335,6 +1307,7 @@ void back_up()
         }
     }
 
+    // creates the back up
     if (choice == 1)
     {
         FILE *orig = fopen("Records.txt", "r");
@@ -1346,9 +1319,12 @@ void back_up()
             fgets(line, 255, orig);
             fprintf(back_up, "%s", line);
         }
+
         fclose(orig);
         fclose(back_up);
+
         frame_erase();
+
         gotoxy(4, 22);
         printf("Back up has been created");
     }
@@ -1361,11 +1337,12 @@ void back_up()
 int total_search(char *date)
 {
     FILE *ic_record = fopen("Records.txt", "r");
+    int it = 0, ctr = 0, counter = 0, pgctr = 0, dt = 0, total = 1, row = 4, column = 12, position = 0;
     char *split;
     char line[255];
     char product[30];
-    int it = 0, ctr = 0, pr = 1, counter = 0, page = 1, pgctr = 0, dt = 0, total;
 
+    // returns the total
     while (fscanf(ic_record, "%s", line) != EOF)
     {
         split = strtok(line, " ");
@@ -1375,6 +1352,7 @@ int total_search(char *date)
             while (split != NULL)
             {
                 it = 1;
+
                 if (counter == 0)
                 {
                     if (strcmp(split, "1") == 0)
@@ -1482,6 +1460,7 @@ int total_search(char *date)
                         char ip[40] = "Ice Pop";
                         strcpy(product, ip);
                     }
+
                     counter++;
                 }
                 else if (counter > 0)
@@ -1539,6 +1518,7 @@ int total_search(char *date)
 
 void frame()
 {
+    // creates the frame
     line2(2, 2, 80, 6);
     line2(2, 2, 80, 24);
     printxy(4, 4, "Aice Order Recorder");
@@ -1553,5 +1533,6 @@ void frame()
 
 void frame_erase()
 {
+    // erase the inside of the frame
     clearportion(3, 7, 79, 23);
 }
